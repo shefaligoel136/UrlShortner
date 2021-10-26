@@ -14,7 +14,7 @@ export class ShortUrlService {
     @InjectModel('ShortUrl') private readonly urlModel: Model<ShortUrl>,
   ) {}
 
-  baseUrl = 'http://localhost:3000';
+  baseUrl = 'http://localhost:3000/shortUrl';
 
   async generateUrl(longUrl: string) {
     const code = nanoid();
@@ -37,12 +37,12 @@ export class ShortUrlService {
   }
 
   async getLongUrlFromCode(code: string) {
-    const longUrl = await this.urlModel.findOne({ code });
+    const urlDetails = await this.urlModel.findOne({ code });
 
-    if (!longUrl) {
+    if (!urlDetails) {
       throw new NotFoundException('Cannot find url with the given code');
     }
 
-    return longUrl;
+    return urlDetails.longUrl;
   }
 }

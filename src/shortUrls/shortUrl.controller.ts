@@ -19,6 +19,6 @@ export class ShortUrlController {
 
   @Get(':code')
   async getLongUrl(@Param('code') urlCode: string) {
-    return await this.shortUrlService.getLongUrlFromCode(urlCode);
+    return { url: await this.shortUrlService.getLongUrlFromCode(urlCode) };
   }
 }
