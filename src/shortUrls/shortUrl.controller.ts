@@ -7,18 +7,18 @@ export class ShortUrlController {
   constructor(private readonly shortUrlService: ShortUrlService) {}
 
   @Post()
-  generateShortUrl(@Body('longUrl') longUrl: string) {
-    const urlDetails = this.shortUrlService.generateUrl(longUrl);
+  async generateShortUrl(@Body('longUrl') longUrl: string) {
+    const urlDetails = await this.shortUrlService.generateUrl(longUrl);
     return { urlDetails: urlDetails };
   }
 
   @Get()
-  getAllUrls() {
-    return this.shortUrlService.getAllUrls();
+  async getAllUrls() {
+    return await this.shortUrlService.getAllUrls();
   }
 
   @Get(':code')
-  getLongUrl(@Param('code') urlCode: string) {
-    return this.shortUrlService.getLongUrlFromCode(urlCode);
+  async getLongUrl(@Param('code') urlCode: string) {
+    return await this.shortUrlService.getLongUrlFromCode(urlCode);
   }
 }
