@@ -5,34 +5,38 @@ import { ShortUrl } from './shortUrl.model';
 
 import { nanoid } from 'nanoid';
 import { Model } from 'mongoose';
+import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class ShortUrlService {
-  private urls: ShortUrl[] = [];
-
   //  injectModel tells that you want to inject mongoose model
   constructor(
     @InjectModel('ShortUrl') private readonly urlModel: Model<ShortUrl>,
+    private readonly configService: ConfigService,
   ) {}
 
-  baseUrl = 'http://localhost:3000/shortUrl';
+  baseUrl = this.configService.get('base_url');
 
   async generateUrl(longUrl: string) {
     const code = nanoid();
     const shortUrl = this.baseUrl + '/' + code;
 
+    const doesExists = await this.urlModel.findOne({ longUrl });
+
+    if (doesExists) {
+      return this.baseUrl + '/' + doesExists.code;
+    }
+
     const newUrl = new this.urlModel({
       longUrl,
-      shortUrl,
       code,
     });
 
-    const urlDetails = await newUrl.save();
-    console.log(urlDetails);
-    return urlDetails;
+    await newUrl.save();
+    return shortUrl;
   }
 
   async getAllUrls() {
-    const allUrlDetails = await this.urlModel.find().exec();
+    const allUrlDetails = await this.urlModel.find().limit(10).exec();
     return allUrlDetails;
   }
 

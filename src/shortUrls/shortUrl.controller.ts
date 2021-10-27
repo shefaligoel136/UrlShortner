@@ -11,7 +11,7 @@ export class ShortUrlController {
   @Post()
   async generateShortUrl(@Body('longUrl') longUrl: string) {
     const urlDetails = await this.shortUrlService.generateUrl(longUrl);
-    return { urlDetails: urlDetails };
+    return { shortUrl: urlDetails };
   }
 
   @Get()
